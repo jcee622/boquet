@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virtual Bouquet Builder</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand" aria-label="Virtual Bouquet home">
+          <div class="brand-mark">🌸</div>
+          <span>Virtual Bouquet</span>
+        </div>
+
+        <nav class="top-actions" aria-label="Main actions">
+          <button type="button" class="soft-btn" id="newBouquetBtn">New Bouquet</button>
+          <button type="button" class="soft-btn" id="undoBtn">Undo</button>
+          <button type="button" class="soft-btn" id="redoBtn">Redo</button>
+          <button type="button" class="soft-btn" id="saveBtn">Save</button>
+          <button type="button" class="primary-btn" id="previewBtn">Preview</button>
+        </nav>
+      </header>
+
+      <main class="workspace">
+        <aside class="panel asset-panel" aria-label="Asset panel">
+          <div class="panel-header">
+            <h2>Flower Studio</h2>
+          </div>
+
+          <div class="asset-controls">
+            <input id="assetSearch" type="search" placeholder="Search flowers and decorations..." aria-label="Search items" />
+            <div class="color-filter" id="colorFilter" aria-label="Color filter"></div>
+          </div>
+
+          <div class="category-tabs" id="categoryTabs" aria-label="Categories"></div>
+          <div class="asset-grid" id="assetGrid" aria-live="polite"></div>
+        </aside>
+
+        <section class="canvas-panel" aria-label="Bouquet canvas area">
+          <div class="canvas-wrap">
+            <div id="bouquetCanvas" class="bouquet-canvas" aria-label="Bouquet editing canvas">
+              <div class="canvas-empty">
+                <div class="empty-icon">🌸</div>
+                <h3>Start creating your bouquet 🌸</h3>
+                <p>Choose a wrapper, flower, or decoration from the menu.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel editor-panel" aria-label="Editing panel">
+          <div class="edit-head"><h2>Edit Item</h2></div>
+          <div id="editPanelContent" class="edit-panel-content"></div>
+
+          <div class="editor-section">
+            <h3>Canvas Background</h3>
+            <div class="background-grid" id="backgroundGrid" aria-label="Canvas background presets"></div>
+            <label class="color-field">
+              <span>Custom Color</span>
+              <input type="color" id="customBackgroundColor" value="#fffaf7" />
+            </label>
+          </div>
+
+          <div class="editor-section message-section">
+            <h3>Add a Message</h3>
+            <label>
+              <span>Bouquet Title</span>
+              <input id="bouquetTitle" type="text" maxlength="70" placeholder="For Someone Special" />
+            </label>
+            <label>
+              <span>Recipient Name</span>
+              <input id="bouquetRecipient" type="text" maxlength="70" placeholder="My Love" />
+            </label>
+            <label>
+              <span>Sender Name</span>
+              <input id="bouquetSender" type="text" maxlength="70" placeholder="From Me" />
+            </label>
+            <label>
+              <span>Message</span>
+              <textarea id="bouquetMessage" maxlength="260" placeholder="Just a little bouquet to remind you how special you are. 🌷"></textarea>
+            </label>
+            <div class="counter-row">
+              <span>Character count</span>
+              <span id="messageCounter">0/260</span>
+            </div>
+          </div>
+
+          <div class="editor-section">
+            <h3>Message Card</h3>
+            <div class="card-style-grid" id="messageCardStyles" aria-label="Message card styles"></div>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <div id="previewModal" class="modal-backdrop hidden" aria-hidden="true">
+      <div class="modal-window preview-window">
+        <div class="modal-header">
+          <h3>🌸 Completed bouquet</h3>
+          <button type="button" class="icon-btn" data-close-modal="previewModal" aria-label="Close preview">✕</button>
+        </div>
+        <div class="modal-body preview-body">
+          <div class="preview-layout">
+            <div class="preview-canvas" id="previewCanvas"></div>
+            <div class="preview-info">
+              <div class="preview-meta">
+                <span class="meta-label">Bouquet Title</span>
+                <strong id="previewTitle">For Someone Special</strong>
+              </div>
+              <div class="preview-meta">
+                <span class="meta-label">Recipient</span>
+                <strong id="previewRecipient">My Love</strong>
+              </div>
+              <div class="preview-message-card" id="previewMessageCard">
+                <p id="previewMessageText">Just a little bouquet to remind you how special you are. 🌷</p>
+                <span id="previewSender">From Me</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="soft-btn" data-close-modal="previewModal">Edit Bouquet</button>
+          <button type="button" class="primary-btn" id="downloadBouquetBtn">Download</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="restoreModal" class="modal-backdrop hidden" aria-hidden="true">
+      <div class="modal-window small-window">
+        <div class="modal-header">
+          <h3>Continue your previous bouquet?</h3>
+        </div>
+        <div class="modal-body restore-body">
+          <p>You have a saved bouquet in this browser. Would you like to resume it?</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="soft-btn" id="restoreBouquetBtn">Continue</button>
+          <button type="button" class="primary-btn" id="startFreshBtn">Start New</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  </body>
+</html>
